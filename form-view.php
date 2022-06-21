@@ -9,10 +9,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" type="text/css"
           rel="stylesheet"/>
-    <title>Your fancy store</title>
+    <title>puppylov store</title>
 </head>
 <body>
 <div class="container">
+    <div class=" float-end">
+        <button type="button" id="newOrder"><a href="<?php $_SERVER['PHP_SELF']; ?>">New Order</a></button>
+    </div>
     <h1>Place your order</h1>
     <?php // Navigation for when you need it ?>
     <?php /*
@@ -27,7 +30,8 @@
         </ul>
     </nav>
     */ ?>
-    <form method="post">
+    
+     <form method="post" id="userDetails" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"> 
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
@@ -65,13 +69,14 @@
             <legend>Products</legend>
             <?php foreach ($products as $i => $product): ?>
                 <label>
-					<?php // <?= is equal to <?php echo ?>
-                    <input type="checkbox" value="1" name="products[<?php echo $i ?>]"/> <?php echo $product['name'] ?> -
-                    &euro; <?= number_format($product['price'], 2) ?></label><br />
+                    <?php // <?= is equal to <?php echo ?>
+                    <input type="checkbox" value="<?php echo $i ?>" name="products[<?php echo $i ?>]"/> 
+                    <?php echo $product['name'] ?> - &euro; <?= number_format($product['price'], 2) ?>
+                </label><br />
             <?php endforeach; ?>
         </fieldset>
 
-        <button type="submit" class="btn btn-primary">Order!</button>
+        <button type="submit" class="btn btn-primary" name="submit" onclick="return comfirm('Please confirm your order');" />>Order!</button>
     </form>
 
     <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
@@ -82,5 +87,7 @@
         text-align: center;
     }
 </style>
+
+
 </body>
 </html>
