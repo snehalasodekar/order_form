@@ -28,7 +28,7 @@ $products = [
     ['name' => 'Your favourite snack', 'price' => 3.5]
 ];
 
-$totalValue = 2;
+$totalValue = 0;
 
 function validate()
 {
@@ -72,7 +72,7 @@ function handleForm($products,$totalValue)
         $streetnumber = test_input($_POST["streetnumber"]);
         $city = test_input($_POST["city"]);
         $zipcode = test_input($_POST["zipcode"]);
-
+        setSession($email,$street,$streetnumber,$city,$zipcode,$products,$totalValue);
     }
 
     
@@ -101,19 +101,37 @@ function handleForm($products,$totalValue)
 
 
         $OrderedProducts=[];
+        // if(isset($_POST['confirm'])){
+
+        // }
+        // if(isset($_POST['cancel'])){
+        //     session_unset();
+        // }
+        echo "<div class='container' id='orderDetails'><div class='row'><div class='col-12 col-md-4 offset-md-4 p-3 border border-success'>";
         echo "<h2>Your order is successful</h2>";
         
-        echo "<h5>Email : ".$email."</h5>";
-        echo "<div>Address :  <br> street =  ".$street." <br> street Number = ".$streetnumber." <br> City = ".$city."<br>Zipcode = ".$zipcode."</div>";
-       echo "<div> Ordered Products = ".$showProduct=getOrderedProducts($products)."</div>";
+        echo "<div><h5>Email : ".$email."</h5>";
+        echo "<div>Address :  <ul style='list-style:none;'><li> street :  ".$street." </li><li> street Number : ".$streetnumber."</li><li> City : ".$city."</li><li>Zipcode : ".$zipcode."</li></ul></div>";
+       echo "<div> Ordered Products : <br/><ul style='list-style:none;'>".$showProduct=getOrderedProducts($products)."</ul></div>";
         echo "<div> Total Value = ".$orderTotal = calculateTotalOrderValue($products,$totalValue)."</div>";
-
+        echo "<p>If the information above is correct press confirm otherwise press cancel</p>";
+        echo " <form method='post'><button type='reset' name='confirm' class='btn btn-outline-success btn-sm m-1'>Confirm</button>";
+        echo "<button type='button' name='reset' class='btn btn-outline-warning btn-sm m-1' onclick='clickMe()'>Cancel</button></form>";
+        echo "</div> </div> </div>";
+        
 
         
     }
 }
+
+/**
+ * get 
+*
+function hideDiv(){
+    orderDetails
+}*/
 function getOrderedProducts($products){
-    $showProduct = implode(", ", array_map(function ($entry) {
+    $showProduct = implode("<li> ", array_map(function ($entry) {
             return ($entry['name']."  ".$entry['price']);
         }, $products));
     return $showProduct;
@@ -140,8 +158,38 @@ function test_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
+    if(substr($data, -1) == '/') {
+        $data = substr($data, 0, -1);
+    }
     return $data;
 }
+
+
+/**
+ * Set session variables
+ * $email,$street,$streetnumber,$city,$zipcode,$products
+ */
+function setSession($email,$street,$streetnumber,$city,$zipcode,$products,$totalValue){
+    $_SESSION["email"] = $email;
+        $_SESSION["city"] = $city;
+        $_SESSION["street"] = $street;
+        $_SESSION["streetnumber"] = $streetnumber;
+        $_SESSION["zipcode"] = $zipcode;
+        if (isset($_POST['products'])){
+            foreach ($_POST['products'] as $i => $product){
+                $_SESSION['products'][$i] = $product;
+            }
+        }
+      //  $_SESSION["products"] = $products; // we didn't use showproduct variable because we need ordered products array to use further  
+        $_SESSION["orderTotal"] = calculateTotalOrderValue($products,$totalValue);
+}
+/**
+ * End session
+ */
+if (isset($_POST['newOrder'])){
+    session_unset();
+}
+
 // TODO: replace this if by an actual check
 $formSubmitted = false;
 //if ($formSubmitted) {
@@ -152,3 +200,4 @@ if (isset($_POST['submit'])){
 }
 //whatIsHappening();
 require 'form-view.php';
+

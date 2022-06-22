@@ -14,7 +14,9 @@
 <body>
 <div class="container">
     <div class=" float-end">
-        <button type="button" id="newOrder"><a href="<?php $_SERVER['PHP_SELF']; ?>">New Order</a></button>
+        <form method="post">
+            <button class="btn btn-primary" type="newOrder" id="newOrder" name="newOrder">New Order</button>
+        </form>
     </div>
     <h1>Place your order</h1>
     <?php // Navigation for when you need it ?>
@@ -35,7 +37,12 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" class="form-control"/>
+                <input id="email" name="email" class="form-control" <?php
+                if(isset( $_SESSION['email'])){
+                    $emailVal = $_SESSION['email'];
+                   echo "value = '$emailVal'";
+                }
+                ?>/>
             </div>
             <div></div>
         </div>
@@ -46,21 +53,41 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="street">Street:</label>
-                    <input type="text" name="street" id="street" class="form-control">
+                    <input type="text" name="street" id="street" class="form-control" <?php
+                    if(isset( $_SESSION['street'])){
+                        $streetVal = $_SESSION['street'];
+                    echo "value = '$streetVal'";
+                    }
+                ?>/>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="streetnumber">Street number:</label>
-                    <input type="text" id="streetnumber" name="streetnumber" class="form-control">
+                    <input type="text" id="streetnumber" name="streetnumber" class="form-control"  <?php
+                    if(isset( $_SESSION['streetnumber'])){
+                        $streetnumberVal = $_SESSION['streetnumber'];
+                    echo "value = '$streetnumberVal'";
+                    }
+                ?>/>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="city">City:</label>
-                    <input type="text" id="city" name="city" class="form-control">
+                    <input type="text" id="city" name="city" class="form-control"  <?php
+                    if(isset( $_SESSION['city'])){
+                        $cityVal = $_SESSION['city'];
+                    echo "value = '$cityVal'";
+                    }
+                ?>/>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="zipcode">Zipcode</label>
-                    <input type="text" id="zipcode" name="zipcode" class="form-control">
+                    <input type="text" id="zipcode" name="zipcode" class="form-control"  <?php
+                    if(isset( $_SESSION['zipcode'])){
+                        $zipcodeVal = $_SESSION['zipcode'];
+                        echo "value = '$zipcodeVal'";
+                    }
+                ?>/>
                 </div>
             </div>
         </fieldset>
@@ -70,7 +97,7 @@
             <?php foreach ($products as $i => $product): ?>
                 <label>
                     <?php // <?= is equal to <?php echo ?>
-                    <input type="checkbox" value="<?php echo $i ?>" name="products[<?php echo $i ?>]"/> 
+                    <input type="checkbox" value="<?php echo $i ?>" name="products[<?php echo $i ?>]" <?php if (isset($_SESSION['products'][$i])){echo 'checked';}?> /> 
                     <?php echo $product['name'] ?> - &euro; <?= number_format($product['price'], 2) ?>
                 </label><br />
             <?php endforeach; ?>
@@ -80,7 +107,12 @@
     </form>
     
 
-    <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
+    <footer>You already ordered <strong>&euro; <?php
+                    if(isset( $_SESSION['orderTotal'])){
+                        $orderTotalVal = $_SESSION['orderTotal'];
+                        echo "value = '$orderTotalVal'";
+                    }
+                ?></strong> in food and drinks.</footer>
 </div>
 
 <style>
@@ -89,6 +121,11 @@
     }
 </style>
 
-
+<script>
+function clickMe(){
+//var result ="<?php hideDiv(); ?>"
+document.write(result);
+}
+</script>
 </body>
 </html>
