@@ -28,23 +28,24 @@ $products = [
     ['name' => 'Your favourite snack', 'price' => 3.5]
 ];
 
-$totalValue = 0;
+$totalValue = 2;
 
 function validate()
 {
     // TODO: This function will send a list of invalid fields back
     if($_SERVER['REQUEST_METHOD'] === 'POST'){
-        $error = array();
+        $errors = array();
     
-        if(empty($_POST['email'])){ $error['email'] = "You forgot to enter your email!";}
-        if(empty($_POST['street'])){$error['street'] = "You forgot to enter a street!";}
-        if(empty($_POST['streetnumber'])){$error['streetnumber'] = "You forgot to enter a streetnumber!";}
-        if(empty($_POST['city'])){$error['city'] = "You forgot to enter a city!";}
-        if(empty($_POST['zipcode'])){$error['zipcode'] = "You forgot to enter a zipcode!";}
-    
-        if(!empty($error))
+        if(empty($_POST['email'])){ $errors['email'] = "You forgot to enter an email!";}
+        if(empty($_POST['street'])){$errors['street'] = "You forgot to enter a street!";}
+        if(empty($_POST['streetnumber'])){$errors['streetnumber'] = "You forgot to enter a streetnumber!";}
+        if(empty($_POST['city'])){$errors['city'] = "You forgot to enter a city!";}
+        if(empty($_POST['zipcode'])){$errors['zipcode'] = "You forgot to enter a zipcode!";}
+        if(empty($_POST['products'])){$errors['products'] = 'You need to choose one of our products!'; }
+
+        if(!empty($errors))
         {
-            return $error;
+            return $errors;
             //header("Location: normal.php");
         } /*else{
             $_SERVER['PHP_SELF'];
@@ -53,9 +54,9 @@ function validate()
     
 }
 
-function handleForm($products)
+function handleForm($products,$totalValue)
 {
-
+//echo "BECODE = ".$totalValue."<br/>";
     // TODO: form related tasks (step 1)
    /**
     * Initialize empty variable for user inputs
@@ -74,33 +75,65 @@ function handleForm($products)
 
     }
 
-    // Removing the redundant HTML characters if any exist.
-    if(!empty($email) && !empty($street) && !empty($streetnumber) && !empty($city) && !empty($zipcode) && !empty($_POST["products"])){
-        $OrderedProducts=[];
-        echo "<h2>Your Input:</h2>";
-        echo "Email = ".$email." <br> street =  ".$street." <br> street Number = ".$streetnumber." <br> City = ".$city." <br> zipcode = ". $zipcode;
-        echo "<br> Products = ".implode(" ",$_POST["products"]);
-        foreach($_POST["products"] as $index=>$product){
-            for($i=0;$i<count($products);$i++){
-                if($index == $i)
-                {
-                    array_push($OrderedProducts,$products[$i]);
-                }
-            }
-        }
-        $showPeoduct =implode(", ", array_map(function ($entry) {
-            return ($entry['name']."  ".$entry['price']);
-        }, $OrderedProducts));
-        echo "<br> Ordered Products = ".$showPeoduct;
-    }
+    
     // Validation (step 2)
     $invalidFields = validate();
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<div class='alert alert-warning'>";
+        echo "Enter valid Email address";
+        echo "</div>";
+    }
+    if (!ctype_digit($zipcode)) {
+        echo "<div class='alert alert-warning'>";
+        echo "Enter valid zipcode. Zipcode must be numeric";
+        echo "</div>";
+    }
     if (!empty($invalidFields)) {
-        var_dump($invalidFields);
+       // var_dump($invalidFields);
+            forEach($invalidFields as $error){
+                echo "<div class='alert alert-warning'>";
+                echo $error;
+                echo "</div>";
+            }
         // TODO: handle errors
     } else {
         // TODO: handle successful submission
+
+
+        $OrderedProducts=[];
+        echo "<h2>Your order is successful</h2>";
+        
+        echo "<h5>Email : ".$email."</h5>";
+        echo "<div>Address :  <br> street =  ".$street." <br> street Number = ".$streetnumber." <br> City = ".$city."<br>Zipcode = ".$zipcode."</div>";
+       echo "<div> Ordered Products = ".$showProduct=getOrderedProducts($products)."</div>";
+        echo "<div> Total Value = ".$orderTotal = calculateTotalOrderValue($products,$totalValue)."</div>";
+
+
+        
     }
+}
+function getOrderedProducts($products){
+    $showProduct = implode(", ", array_map(function ($entry) {
+            return ($entry['name']."  ".$entry['price']);
+        }, $products));
+    return $showProduct;
+}
+function calculateTotalOrderValue($products,$totalValue){
+    $OrderedProducts =[];
+    foreach($products as $index=>$product){
+        for($i=0;$i<count($products);$i++){
+            if($index == $i)
+            {
+                array_push($OrderedProducts,$products[$i]);
+            }
+        }
+    }
+    //$totalValue = calculateOrder($OrderedProducts);
+    $add = 0;
+    forEach($OrderedProducts as $index =>$value){
+        $add = $add + $value['price'];
+    }
+    return $add;
 }
 
 function test_input($data) {
@@ -113,9 +146,9 @@ function test_input($data) {
 $formSubmitted = false;
 //if ($formSubmitted) {
 if (isset($_POST['submit'])){
-    handleForm($products);
+    handleForm($products,$totalValue);
 }else{
-    echo " testing";
+   // echo " testing";
 }
 //whatIsHappening();
 require 'form-view.php';

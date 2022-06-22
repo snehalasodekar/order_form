@@ -76,8 +76,9 @@
             <?php endforeach; ?>
         </fieldset>
 
-        <button type="submit" class="btn btn-primary" name="submit" onclick="return comfirm('Please confirm your order');" />>Order!</button>
+        <button type="submit" class="btn btn-primary" name="submit" onclick="return comfirm('Please confirm your order');" />Order!</button>
     </form>
+    
 
     <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
 </div>
