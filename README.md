@@ -1,9 +1,10 @@
 # order_form
+Create a user order confirmation on form submit in php.
 
-- Repository: `order-form`
-- Type of Challenge: `Learning challenge`
-- Duration: `2-3 days`
-- Team challenge : `solo`
+# Output
+![](images/1.png)
+
+![](images/2.png)
 
 ## 🌱 Must-have features
 
